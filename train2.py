@@ -14,7 +14,7 @@ import tensorflow as tf
 import tensorflow.keras as keras
 
 # Build a Keras model given some parameters
-def create_model(captcha_length, captcha_num_symbols, input_shape, model_depth=5, module_size=2):
+def create_model(captcha_length, captcha_num_symbols, input_shape, model_depth=5, module_size=4):
   input_tensor = keras.Input(input_shape)
   x = input_tensor
   for i, module_length in enumerate([module_size] * model_depth):
@@ -142,8 +142,8 @@ def main():
     # assert len(physical_devices) > 0, "No GPU available!"
     # tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-    # with tf.device('/device:GPU:0'):
-    with tf.device('/device:CPU:0'):
+    with tf.device('/device:GPU:0'):
+    # with tf.device('/device:CPU:0'):
     # with tf.device('/device:XLA_CPU:0'):
         model = create_model(args.length, len(captcha_symbols), (args.height, args.width, 3))
 
@@ -151,7 +151,7 @@ def main():
             model.load_weights(args.input_model)
 
         model.compile(loss='categorical_crossentropy',
-                      optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
+                      optimizer=keras.optimizers.Adam(learning_rate=0.0001, amsgrad=True),
                       metrics=['accuracy'])
 
         model.summary()
