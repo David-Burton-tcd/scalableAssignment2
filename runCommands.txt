@@ -1,0 +1,9 @@
+source Toy\ Project/venv/bin/activate
+
+python3 generate.py --width 128 --height 64 --max-length 5 --symbols symbols.txt --count 10000 --output-dir validate
+
+python3 train.py --width 128 --height 64 --max-length 5 --symbols symbols.txt --batch-size 32 --epochs 1 --output-model test.h5 --train-dataset train --validate-dataset validate
+
+python3 train2.py --width 128 --height 64 --length 5 --symbols symbols.txt --batch-size 32 --epochs 3 --output-model test.h5 --train-dataset train --validate-dataset validate
+
+python3 classify.py --model-name test --captcha-dir validate --output results/run1.csv --symbols symbols.txt
