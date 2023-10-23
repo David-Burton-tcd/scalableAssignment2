@@ -12,7 +12,6 @@ import random
 import argparse
 import tensorflow as tf
 import tensorflow.keras as keras
-from train3 import CTCLayer
 
 def decode(characters, y):
     y = numpy.argmax(numpy.array(y), axis=2)[:,0]
@@ -55,7 +54,7 @@ def main():
             json_file = open(args.model_name + '.json', 'r')
             loaded_model_json = json_file.read()
             json_file.close()
-            model = keras.models.model_from_json(loaded_model_json, custom_objects={"CTCLayer":CTCLayer})
+            model = keras.models.model_from_json(loaded_model_json)
             model.load_weights(args.model_name+'.h5')
             model.compile(loss='categorical_crossentropy',
                           optimizer=keras.optimizers.legacy.Adam(1e-3, amsgrad=True),
