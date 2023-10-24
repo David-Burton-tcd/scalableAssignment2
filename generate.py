@@ -56,19 +56,16 @@ def main():
         os.makedirs(args.output_dir)
 
     for i in range(args.count):
-
         random_str = ''.join([random.choice(captcha_symbols) for j in range(random.randint(1, args.max_length))])
         image_path = os.path.join(args.output_dir, random_str+'.png')
-        
         if os.path.exists(image_path):
-            print('Skipping duplicate image')
-            # version = 1
-            # while os.path.exists(os.path.join(args.output_dir, random_str + '_' + str(version) + '.png')):
-            #     version += 1
-            # image_path = os.path.join(args.output_dir, random_str + '_' + str(version) + '.png')
-        else:
-            image = numpy.array(captcha_generator.generate_image(random_str))
-            cv2.imwrite(image_path, image)
+            version = 1
+            while os.path.exists(os.path.join(args.output_dir, random_str + '@' + str(version) + '.png')):
+                version += 1
+            image_path = os.path.join(args.output_dir, random_str + '@' + str(version) + '.png')
+        imageSave = captcha_generator.generate_image(random_str)
+        image = numpy.array(imageSave)
+        cv2.imwrite(image_path, image)
 
 if __name__ == '__main__':
     main()
