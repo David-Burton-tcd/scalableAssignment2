@@ -57,6 +57,9 @@ def main():
 
     for i in range(args.count):
         random_str = ''.join([random.choice(captcha_symbols) for j in range(random.randint(1, args.max_length))])
+        if len(random_str) < args.max_length:
+            for k in range(args.max_length - len(random_str)):
+                random_str = random_str + ' '
         image_path = os.path.join(args.output_dir, random_str+'.png')
         if os.path.exists(image_path):
             version = 1

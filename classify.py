@@ -100,7 +100,7 @@ def main():
                           optimizer=keras.optimizers.legacy.Adam(1e-3, amsgrad=True),
                           metrics=['accuracy'])
 
-            for x in os.listdir(args.captcha_dir):
+            for x in sorted(os.listdir(args.captcha_dir)):
                 # load image and preprocess it
                 raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
                 if raw_data is not None :
