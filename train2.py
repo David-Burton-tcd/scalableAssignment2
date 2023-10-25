@@ -128,7 +128,8 @@ class ImageSequence(keras.utils.Sequence):
 
             random_image_label = random_image_label.split('@')[0]
             # replace / with :
-            random_image_label = random_image_label.replace('/', ':')
+            # this works on macOS
+            # random_image_label = random_image_label.replace('/', ':')
 
             for j, ch in enumerate(random_image_label):
                 y[j][i, :] = 0
@@ -203,7 +204,7 @@ def main():
             model.load_weights(args.input_model)
 
         model.compile(loss='categorical_crossentropy',
-                      optimizer=keras.optimizers.Adam(learning_rate=0.0001, amsgrad=True),
+                      optimizer=keras.optimizers.Adam(learning_rate=0.00001, amsgrad=True),
                       metrics=['accuracy'])
 
         model.summary()
