@@ -34,24 +34,25 @@ class NoiseRemover():
         return img
 
     def remove_all_noise(img):
-        # run some basic tests to get rid of easy-to-remove noise -- first pass
-        img = img[1]
-        img = ~img # white letters, black background
-        img = cv2.erode(img, numpy.ones((3, 2), numpy.uint8), iterations = 1) # weaken circle noise and line noise
-        img = ~img # black letters, white background
-        # img = scipy.ndimage.median_filter(img, (5, 1)) # remove line noise
-        # img = scipy.ndimage.median_filter(img, (1, 3)) # weaken circle noise
-        img = cv2.erode(img, numpy.ones((2, 2), numpy.uint8), iterations = 1) # dilate image to initial stage (erode works similar to dilate because we thresholded the image the opposite way)
-        # img = scipy.ndimage.median_filter(img, (3, 3)) # remove any final 'weak' noise that might be present (line or circle)
+        if type(img) != None:
+            # run some basic tests to get rid of easy-to-remove noise -- first pass
+            img = img[1]
+            img = ~img # white letters, black background
+            img = cv2.erode(img, numpy.ones((3, 2), numpy.uint8), iterations = 1) # weaken circle noise and line noise
+            img = ~img # black letters, white background
+            # img = scipy.ndimage.median_filter(img, (5, 1)) # remove line noise
+            # img = scipy.ndimage.median_filter(img, (1, 3)) # weaken circle noise
+            img = cv2.erode(img, numpy.ones((2, 2), numpy.uint8), iterations = 1) # dilate image to initial stage (erode works similar to dilate because we thresholded the image the opposite way)
+            # img = scipy.ndimage.median_filter(img, (3, 3)) # remove any final 'weak' noise that might be present (line or circle)
 
-        # detect any remaining circle noise
-        # img = NoiseRemover._detect_and_remove_circles(img) # after dilation, if concrete circles exist, use hough transform to remove them
-        # eradicate any final noise that wasn't removed previously -- second pass
-        img = cv2.dilate(img, numpy.ones((3, 3), numpy.uint8), iterations = 1) # actually performs erosion
-        # img = scipy.ndimage.median_filter(img, (3, 1)) # finally completely remove any extra noise that remains
-        img = cv2.dilate(img, numpy.ones((2, 2), numpy.uint8), iterations = 1) # erode just a bit to polish fine details
-        img = cv2.erode(img, numpy.ones((2, 2), numpy.uint8), iterations = 2) # dilate image to make it look like the original
-        return img
+            # detect any remaining circle noise
+            # img = NoiseRemover._detect_and_remove_circles(img) # after dilation, if concrete circles exist, use hough transform to remove them
+            # eradicate any final noise that wasn't removed previously -- second pass
+            img = cv2.dilate(img, numpy.ones((3, 3), numpy.uint8), iterations = 1) # actually performs erosion
+            # img = scipy.ndimage.median_filter(img, (3, 1)) # finally completely remove any extra noise that remains
+            img = cv2.dilate(img, numpy.ones((2, 2), numpy.uint8), iterations = 1) # erode just a bit to polish fine details
+            img = cv2.erode(img, numpy.ones((2, 2), numpy.uint8), iterations = 2) # dilate image to make it look like the original
+            return img
 
 # Build a Keras model given some parameters
 def create_model(captcha_length, captcha_num_symbols, input_shape, model_depth=5, module_size=2):
@@ -117,6 +118,8 @@ class ImageSequence(keras.utils.Sequence):
             # denoise
             raw_data1 = cv2.threshold(raw_data, 222, 255, cv2.THRESH_BINARY)
             raw_data2 = NoiseRemover.remove_all_noise(raw_data1)
+            if type(raw_data2) == None:
+                break
 
             rgb_data = cv2.cvtColor(raw_data2, cv2.COLOR_BGR2RGB)
 
