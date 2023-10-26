@@ -55,7 +55,8 @@ class NoiseRemover():
 
 def decode(characters, y):
     y = numpy.argmax(numpy.array(y), axis=2)[:,0]
-    return ''.join([characters[x] for x in y])
+    result = ''.join([characters[x] for x in y])
+    return result.replace('-', '')
 
 def main():
     parser = argparse.ArgumentParser()
@@ -120,7 +121,6 @@ def main():
                     print('Classified ' + x)
                 else:
                     print('File not found for - ' + args.captcha_dir + x)
-        # sort outputs
         
         # write to file
 
